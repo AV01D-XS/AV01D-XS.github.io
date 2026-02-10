@@ -1,203 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
-
-    <title>AV01D-XS | Cybersecurity & DevOps</title>
-
-    <meta name="keywords" content="AV01D-XS, Cybersecurity, DevOps, Penetration Testing, Linux" />
-
-    <meta name="description" content="AV01D-XS | Cybersecurity Analyst & DevOps Engineer" />
-
-    <link rel="icon" type="image/png" href="./assets/devfolio-logo.png" />
-
-    <meta name="theme-color" content="#36d1dc" />
-
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://av01d-xs.github.io/" />
-    <meta property="og:title" content="AV01D-XS | Cybersecurity & DevOps" />
-    <meta property="og:description" content="Cybersecurity Analyst & System Administrator Portfolio" />
-    <meta
-      property="og:image"
-      content="https://devfolio.js.org/assets/devfolio.png"
-    />
-
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://av01d-xs.github.io/" />
-    <meta property="twitter:title" content="AV01D-XS | Cybersecurity & DevOps" />
-    <meta
-      property="twitter:description"
-      content="Cybersecurity Analyst & System Administrator Portfolio"
-    />
-    <meta
-      property="twitter:image"
-      content="https://anilseervi.vercel.app/assets/devfolio.png"
-    />
-
-    <link rel="preload" as="style" href="./css/main.css" />
-    <link rel="stylesheet" href="./css/main.css" />
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
-      integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <script defer src="./javascript/scrollreveal.min.js"></script>
-    <script
-      defer
-      type="text/javascript"
-      src="./javascript/scrollveal.js"
-    ></script>
-  </head>
-  <body>
-    
-    <div id="hero" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1920&auto=format&fit=crop'); background-size: cover; background-position: center;">
-      <section class="container">
-        <h1 class="hero-title mb-4">Hi, I am AV01D-XS</h1>
-        <p class="hero-subtitle">
-          <span class="typed" data-typed-items="Cybersecurity Analyst, Penetration Tester, DevSecOps Engineer, Linux Specialist"></span>
-        </p>
-      </section>
-      <a href="#about" class="scroll-down-link" aria-label="scroll-down">
-        <div class="scroll-down"></div>
-      </a>
-    </div>
-    <section id="about">
+<div id="hero" class="hero route bg-image" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1920&auto=format&fit=crop');">
+  <div class="overlay-itro"></div>
+  <div class="hero-content display-table">
+    <div class="table-cell">
       <div class="container">
-        <h2 class="section-title">About Me</h2>
-        <div class="row about-wrapper">
-          <div class="about-wrapper__image">
-            <img
-              class="img-fluid"
-              src="./assets/profile.png"
-              alt="Profile Image"
-              width="450"
-              height="350"
-            />
-          </div>
-          <div class="about-wrapper__info">
-            <p class="about-wrapper__info-text">
-              I am a Cybersecurity and DevOps specialist focused on infrastructure security and automation. My work bridges the gap between offensive security (Penetration Testing) and defensive architecture.
-            </p>
-            <p class="about-wrapper__info-text">
-              Whether it's hardening Ubuntu servers, analyzing network traffic, or simulating CPU scheduling algorithms, I build systems that are secure by design and efficient by default.
-            </p>
-            <span class="about-wrapper__cta">
-              <a href="resume.pdf" class="cta-btn cta-btn--resume">View Resume</a>
-            </span>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="projects">
-      <div class="container">
-        <div class="project-wrapper">
-          <h2 class="section-title dark-blue-text">Projects</h2>
-
-          <article class="row">
-            <div class="project-wrapper__text">
-              <h3 class="project-wrapper__text-title">Enterprise Penetration Test</h3>
-              <p class="project-wrapper__text-info">
-                Conducted a fully authorized black-box penetration test on a corporate environment as a graduation project. Identified critical vulnerabilities in network services and web applications, delivering a comprehensive remediation report to stakeholders.
-              </p>
-              <div class="project-wrapper__text-btns">
-                <a href="#" class="cta-btn cta-btn--hero cta-btn--projects">View Report</a>
-                <a href="#" class="cta-btn text-color-main">Source Code</a>
-              </div>
-            </div>
-            <div class="project-wrapper__image">
-              <a href="#" target="_blank" rel="noopener noreferrer">
-                <div class="thumbnail rounded">
-                  <img src="./assets/project.png" class="img-fluid" alt="Project Image" width="1366" height="767" />
-                </div>
-              </a>
-            </div>
-          </article>
-
-          <article class="row">
-            <div class="project-wrapper__text">
-              <h3 class="project-wrapper__text-title">3-Tier DevSecOps Environment</h3>
-              <p class="project-wrapper__text-info">
-                Architected a complete software lifecycle environment on Ubuntu using Docker. Configured isolated Development, Staging, and Production servers with automated monitoring stacks using Prometheus and Grafana for real-time performance tracking.
-              </p>
-              <div class="project-wrapper__text-btns">
-                <a href="#" class="cta-btn cta-btn--hero cta-btn--projects">See Live</a>
-                <a href="#" class="cta-btn text-color-main">Source Code</a>
-              </div>
-            </div>
-            <div class="project-wrapper__image">
-              <a href="#" target="_blank" rel="noopener noreferrer">
-                <div class="thumbnail rounded">
-                  <img src="./assets/project.png" class="img-fluid" alt="Project Image" width="1366" height="767" />
-                </div>
-              </a>
-            </div>
-          </article>
-
-          <article class="row">
-            <div class="project-wrapper__text">
-              <h3 class="project-wrapper__text-title">Corporate Network Infrastructure</h3>
-              <p class="project-wrapper__text-info">
-                Designed a multi-domain Windows Server infrastructure integrated with Ubuntu nodes. Simulated complex network topologies using GNS3 to test segmentation, Active Directory policy management, and network security protocols.
-              </p>
-              <div class="project-wrapper__text-btns">
-                <a href="#" class="cta-btn cta-btn--hero cta-btn--projects">View Diagram</a>
-                <a href="#" class="cta-btn text-color-main">Source Code</a>
-              </div>
-            </div>
-            <div class="project-wrapper__image">
-              <a href="#" target="_blank" rel="noopener noreferrer">
-                <div class="thumbnail rounded">
-                  <img src="./assets/project.png" class="img-fluid" alt="Project Image" width="1366" height="767" />
-                </div>
-              </a>
-            </div>
-          </article>
+        
+        <div class="row align-items-center">
           
+          <div class="col-md-7" style="text-align: left;">
+            <p class="text-white mb-3" style="font-size: 1.5rem;">Hello there 👋, I'm</p>
+            <h1 class="hero-title mb-4">AV01D-XS</h1>
+            <p class="hero-subtitle">
+              <span class="typed" data-typed-items="Cybersecurity Analyst, Penetration Tester, DevSecOps Engineer, Linux Specialist"></span>
+            </p>
+            <div class="pt-3">
+              <a class="btn btn-primary btn js-scroll px-4" href="#projects" role="button">View My Work</a>
+            </div>
+          </div>
+
+          <div class="col-md-5 text-center">
+            <img 
+              src="https://github.com/AV01D-XS.png" 
+              alt="Profile" 
+              class="img-fluid rounded-circle shadow-lg" 
+              style="border: 4px solid rgba(54, 209, 220, 0.5); max-width: 300px; width: 100%;"
+            >
+          </div>
+
         </div>
-      </div>
-    </section>
-    <section id="contact">
-      <div class="container">
-        <h2 class="section-title">Contact</h2>
-        <div class="contact-wrapper">
-          <p class="contact-wrapper__text">Interested in collaborating on a security audit or infrastructure project?</p>
-          <a href="mailto:your-email@example.com" class="cta-btn cta-btn--resume">Email Me</a>
         </div>
-      </div>
-    </section>
-    <footer class="footer">
-      <div class="container">
-        <a href="#hero" class="back-to-top" aria-label="go back to top">
-          <i class="fa fa-angle-up fa-2x" aria-hidden="true"></i>
-        </a>
-        <div class="social-links">
-          <a href="#!" target="_blank" rel="noopener noreferrer" aria-label="linkedin">
-            <i class="fa-brands fa-linkedin"></i>
-          </a>
-          <a href="#!" target="_blank" rel="noopener noreferrer" aria-label="github">
-            <i class="fa-brands fa-github"></i>
-          </a>
-          <a href="#!" target="_blank" rel="noopener noreferrer" aria-label="twitter">
-            <i class="fa-brands fa-twitter"></i>
-          </a>
-        </div>
-        <hr />
-        <p class="footer__text">
-          &copy; <span id="year"></span> - <a href="https://github.com/AnilSeervi" target="_blank" rel="noopener noreferrer">Anil Seervi</a>.
-        </p>
-      </div>
-    </footer>
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear()
-    </script>
-    <script src="./javascript/vanilla-tilt.min.js"></script>
-    <script type="text/javascript" src="./javascript/valtilt.js"></script>
-  </body>
-</html>
+    </div>
+  </div>
+</div>
