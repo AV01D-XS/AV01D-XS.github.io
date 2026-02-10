@@ -11,7 +11,7 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
   />
 
-  <!-- Your EXISTING CSS -->
+  <!-- Main CSS -->
   <link rel="stylesheet" href="style.css" />
 
   <!-- Typed.js -->
@@ -20,20 +20,20 @@
 
 <body>
 
-  <!-- ===== HERO SECTION ===== -->
-  <section id="hero">
+  <!-- ================= HERO ================= -->
+  <section id="hero" class="hero-split">
     <div class="container">
-      <div class="row" style="grid-template-columns: 1.3fr 1fr; align-items: center;">
+      <div class="hero-grid">
 
         <!-- TEXT -->
-        <div style="text-align:left;">
+        <div class="hero-text">
           <h1 class="hero-title">
-            Hello there 👋, I'm <br />
+            Hello there 👋, I’m <br />
             <span class="text-color-main">AV01D-XS</span>
           </h1>
 
-          <p style="font-size:2.2rem;margin-bottom:3rem;">
-            <span id="typed"></span>
+          <p class="hero-subtitle">
+            <span class="typed"></span>
           </p>
 
           <div class="hero-cta">
@@ -44,45 +44,29 @@
         </div>
 
         <!-- IMAGE -->
-        <div style="display:flex;justify-content:center;">
+        <div class="hero-image">
           <img
             src="https://github.com/AV01D-XS.png"
-            alt="Profile"
-            style="
-              max-width:280px;
-              width:100%;
-              border-radius:50%;
-              border:4px solid rgba(54,209,220,.55);
-              box-shadow:0 15px 35px rgba(0,0,0,.35);
-            "
+            alt="Profile photo"
           />
         </div>
 
       </div>
     </div>
-
-    <!-- SCROLL DOWN -->
-    <a href="#projects" class="scroll-down-link">
-      <div class="scroll-down"></div>
-    </a>
   </section>
 
-  <!-- ===== PROJECTS PLACEHOLDER ===== -->
+  <!-- ================= PROJECTS ================= -->
   <section id="projects">
     <div class="container">
-      <h2 class="section-title dark-blue-color">
-        Projects
-      </h2>
-      <p>Coming soon…</p>
+      <h2 class="section-title dark-blue-color">Projects</h2>
+      <p>Coming soon.</p>
     </div>
   </section>
 
-  <!-- ===== FOOTER ===== -->
+  <!-- ================= FOOTER ================= -->
   <footer class="footer">
     <div class="container">
-      <p class="footer__text">
-        © 2026 — AV01D-XS
-      </p>
+      <p class="footer__text">© 2026 — AV01D-XS</p>
 
       <div class="social-links">
         <a href="#"><i class="fab fa-github"></i></a>
@@ -92,9 +76,9 @@
     </div>
   </footer>
 
-  <!-- ===== TYPED INIT ===== -->
+  <!-- ================= TYPED INIT ================= -->
   <script>
-    new Typed("#typed", {
+    new Typed(".typed", {
       strings: [
         "Cybersecurity Analyst",
         "Penetration Tester",
