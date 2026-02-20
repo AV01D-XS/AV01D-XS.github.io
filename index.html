@@ -23,8 +23,8 @@
                             bg: '#050507',
                             card: '#0e0e12',
                             border: '#1f1f26',
-                            primary: '#3b82f6', // Professional Blue
-                            accent: '#10b981',  // Success Green
+                            primary: '#3b82f6', // Blue
+                            accent: '#10b981',  // Green
                             text: '#e2e8f0'
                         }
                     },
@@ -48,8 +48,13 @@
     </script>
 
     <style>
-        /* Base styles */
-        body { background-color: #050507; overflow-x: hidden; }
+        /* Base styles & Hiding Default Cursor */
+        body, a, button, input, textarea { 
+            background-color: #050507; 
+            cursor: none !important; /* Forces custom cyber cursor */
+        }
+        body { overflow-x: hidden; }
+        .no-scroll { overflow: hidden; } /* Used for preloader & modals */
         
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
@@ -99,16 +104,65 @@
             opacity: 0.4;
         }
 
-        /* Pause marquee on hover */
-        .pause-hover:hover {
-            animation-play-state: paused;
+        /* Custom Cyber Cursor Elements */
+        .cyber-cursor-dot {
+            position: fixed; top: 0; left: 0; width: 6px; height: 6px;
+            background-color: #10b981; border-radius: 50%; pointer-events: none;
+            transform: translate(-50%, -50%); z-index: 999999;
+            box-shadow: 0 0 10px #10b981;
+        }
+        .cyber-cursor-ring {
+            position: fixed; top: 0; left: 0; width: 30px; height: 30px;
+            border: 1px solid rgba(59, 130, 246, 0.6); border-radius: 50%; pointer-events: none;
+            transform: translate(-50%, -50%); z-index: 999998;
+            transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+        .cyber-cursor-ring.hovering {
+            width: 50px; height: 50px; background-color: rgba(59, 130, 246, 0.1); border-color: #3b82f6;
+        }
+
+        /* Glitch Hover Effect */
+        .glitch-hover { position: relative; display: inline-block; }
+        .glitch-hover::before, .glitch-hover::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; pointer-events: none;
+        }
+        .glitch-hover:hover::before {
+            left: 2px; text-shadow: -2px 0 red; opacity: 1;
+            animation: glitch-anim-1 0.2s infinite linear alternate-reverse;
+        }
+        .glitch-hover:hover::after {
+            left: -2px; text-shadow: -2px 0 cyan; opacity: 1;
+            animation: glitch-anim-2 0.3s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); } 20% { clip-path: inset(60% 0 10% 0); }
+            40% { clip-path: inset(40% 0 50% 0); } 60% { clip-path: inset(80% 0 5% 0); }
+            80% { clip-path: inset(10% 0 70% 0); } 100% { clip-path: inset(30% 0 20% 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); } 20% { clip-path: inset(30% 0 20% 0); }
+            40% { clip-path: inset(70% 0 10% 0); } 60% { clip-path: inset(20% 0 50% 0); }
+            80% { clip-path: inset(50% 0 30% 0); } 100% { clip-path: inset(5% 0 80% 0); }
         }
     </style>
 </head>
-<body class="text-cyber-text font-sans antialiased relative">
+<!-- Body starts with no-scroll to lock the screen during boot sequence -->
+<body class="text-cyber-text font-sans antialiased relative no-scroll">
+
+    <!-- Custom Cursor -->
+    <div class="cyber-cursor-dot" id="cursor-dot"></div>
+    <div class="cyber-cursor-ring" id="cursor-ring"></div>
+
+    <!-- 1. LINUX BOOT PRELOADER -->
+    <div id="preloader" class="fixed inset-0 bg-[#020202] z-[999999] flex flex-col p-4 md:p-8 font-mono text-sm md:text-base text-[#00ff41] transition-opacity duration-700">
+        <div id="boot-text" class="space-y-1 overflow-hidden"></div>
+        <div class="mt-2 animate-pulse w-3 h-5 bg-[#00ff41]" id="boot-cursor"></div>
+    </div>
 
     <!-- Floating Action Button -->
-    <a href="#contact" class="fixed bottom-6 right-6 z-50 group flex items-center justify-center w-14 h-14 bg-cyber-primary rounded-full shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:scale-110 transition-all duration-300">
+    <a href="#contact" class="hover-target fixed bottom-6 right-6 z-40 group flex items-center justify-center w-14 h-14 bg-cyber-primary rounded-full shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:scale-110 transition-all duration-300">
         <span class="absolute inset-0 rounded-full bg-cyber-primary animate-ping opacity-40"></span>
         <i class="fa-solid fa-paper-plane text-white text-xl relative z-10 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform"></i>
     </a>
@@ -117,16 +171,16 @@
     <nav class="fixed w-full z-40 bg-[#050507]/80 backdrop-blur-md border-b border-white/5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <div class="flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                <div class="flex items-center gap-2 hover-target" onclick="window.scrollTo(0,0)">
                     <div class="w-2 h-2 rounded-full bg-cyber-primary animate-pulse"></div>
-                    <span class="font-mono text-lg font-bold tracking-wider text-white">AV01D<span class="text-gray-600">.LOG</span></span>
+                    <span class="font-mono text-lg font-bold tracking-wider text-white glitch-hover" data-text="AV01D.LOG">AV01D<span class="text-gray-600">.LOG</span></span>
                 </div>
                 <div class="hidden md:block">
                     <div class="flex items-baseline space-x-8 font-mono text-sm">
-                        <a href="#about" class="text-gray-400 hover:text-cyber-primary transition-colors">./ABOUT</a>
-                        <a href="#arsenal" class="text-gray-400 hover:text-cyber-primary transition-colors">./ARSENAL</a>
-                        <a href="#projects" class="text-gray-400 hover:text-cyber-primary transition-colors">./PROJECTS</a>
-                        <a href="resume.pdf" download="AV01D_CV.pdf" class="px-4 py-2 border border-cyber-primary/30 rounded text-cyber-primary hover:bg-cyber-primary/10 transition-all">
+                        <a href="#about" class="hover-target matrix-text text-gray-400 hover:text-cyber-primary transition-colors" data-original="./ABOUT">./ABOUT</a>
+                        <a href="#arsenal" class="hover-target matrix-text text-gray-400 hover:text-cyber-primary transition-colors" data-original="./ARSENAL">./ARSENAL</a>
+                        <a href="#projects" class="hover-target matrix-text text-gray-400 hover:text-cyber-primary transition-colors" data-original="./PROJECTS">./PROJECTS</a>
+                        <a href="resume.pdf" download="AV01D_CV.pdf" class="hover-target px-4 py-2 border border-cyber-primary/30 rounded text-cyber-primary hover:bg-cyber-primary/10 transition-all matrix-text" data-original="DOWNLOAD_CV">
                             DOWNLOAD_CV
                         </a>
                     </div>
@@ -137,12 +191,10 @@
 
     <!-- Hero Section -->
     <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
-        <!-- Interactive Canvas Background -->
         <canvas id="canvas-bg"></canvas>
         
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10 w-full relative">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                
                 <!-- Left Column -->
                 <div class="reveal active">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-primary/10 border border-cyber-primary/20 mb-6">
@@ -150,45 +202,37 @@
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-primary opacity-75"></span>
                           <span class="relative inline-flex rounded-full h-2 w-2 bg-cyber-primary"></span>
                         </span>
-                        <span class="font-mono text-xs text-cyber-primary tracking-wide">SYSTEM ONLINE</span>
+                        <span class="font-mono text-xs text-cyber-primary tracking-wide">SYSTEM SECURE</span>
                     </div>
 
-                    <h1 class="text-5xl md:text-7xl font-bold text-white tracking-tight leading-tight mb-6">
+                    <h1 class="text-5xl md:text-7xl font-bold text-white tracking-tight leading-tight mb-6 glitch-hover" data-text="Building Secure Infrastructures">
                         Building Secure <br>
                         <span class="text-gradient">Infrastructures</span>
                     </h1>
                     
                     <p class="text-xl text-gray-400 mb-8 max-w-lg leading-relaxed">
-                        I bridge the gap between <span class="text-white font-semibold">Offensive Security</span> and <span class="text-white font-semibold">DevSecOps</span>. I design systems that are secure by architecture and resilient by default.
+                        I bridge the gap between <span class="text-white font-semibold">Offensive Security</span> and <span class="text-white font-semibold">DevOps</span>. I design systems that are secure by architecture and resilient by default.
                     </p>
                     
                     <div class="flex flex-wrap gap-4">
-                        <a href="#projects" class="group relative px-8 py-4 bg-cyber-primary text-white font-semibold rounded overflow-hidden">
+                        <a href="#projects" class="hover-target group relative px-8 py-4 bg-cyber-primary text-white font-semibold rounded overflow-hidden">
                             <div class="absolute inset-0 w-full h-full bg-white/20 group-hover:translate-x-full transition-transform duration-500 ease-out -translate-x-full transform skew-x-12"></div>
                             View Intelligence
                         </a>
-                        <a href="#contact" class="px-8 py-4 bg-transparent border border-white/10 text-white font-semibold rounded hover:bg-white/5 transition-colors">
+                        <a href="#contact" class="hover-target matrix-text px-8 py-4 bg-transparent border border-white/10 text-white font-semibold rounded hover:bg-white/5 transition-colors" data-original="Contact Me">
                             Contact Me
                         </a>
-                    </div>
-
-                    <!-- Tech Stack Mini-Grid -->
-                    <div class="mt-12 pt-8 border-t border-white/5 grid grid-cols-4 gap-4 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-                        <i class="fa-brands fa-linux text-3xl hover:text-yellow-500 transition-colors" title="Linux"></i>
-                        <i class="fa-brands fa-docker text-3xl hover:text-blue-500 transition-colors" title="Docker"></i>
-                        <i class="fa-brands fa-python text-3xl hover:text-blue-300 transition-colors" title="Python"></i>
-                        <i class="fa-solid fa-network-wired text-3xl hover:text-green-500 transition-colors" title="Networking"></i>
                     </div>
                 </div>
 
                 <!-- Right Column (Profile) -->
-                <div class="relative reveal delay-200 flex justify-center lg:justify-end">
-                    <div class="relative w-80 h-80 lg:w-96 lg:h-96">
-                        <div class="absolute inset-0 rounded-full border border-cyber-primary/20 animate-[spin_10s_linear_infinite]"></div>
-                        <div class="absolute inset-4 rounded-full border border-cyber-accent/20 animate-[spin_15s_linear_infinite_reverse]"></div>
+                <div class="relative reveal delay-200 flex justify-center lg:justify-end hover-target">
+                    <div class="relative w-80 h-80 lg:w-96 lg:h-96 group">
+                        <div class="absolute inset-0 rounded-full border border-cyber-primary/20 animate-[spin_10s_linear_infinite] group-hover:border-cyber-primary/50 transition-colors duration-500"></div>
+                        <div class="absolute inset-4 rounded-full border border-cyber-accent/20 animate-[spin_15s_linear_infinite_reverse] group-hover:border-cyber-accent/50 transition-colors duration-500"></div>
                         
                         <div class="absolute inset-8 rounded-full overflow-hidden border-4 border-[#050507] shadow-2xl">
-                            <img src="https://github.com/AV01D-XS.png" alt="Profile" class="w-full h-full object-cover">
+                            <img src="https://github.com/AV01D-XS.png" alt="Profile" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
                         </div>
 
                         <div class="absolute bottom-10 -left-4 glass-panel px-4 py-2 rounded-lg flex items-center gap-3 animate-bounce">
@@ -197,7 +241,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-gray-400 font-mono">Security Clearance</p>
-                                <p class="text-sm font-bold text-white">Level 5 Active</p>
+                                <p class="text-sm font-bold text-white glitch-hover" data-text="Level 5 Active">Level 5 Active</p>
                             </div>
                         </div>
                     </div>
@@ -210,30 +254,24 @@
     <section id="about" class="py-24 bg-[#08080a]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                
                 <!-- INTERACTIVE Terminal Window -->
-                <div class="reveal">
+                <div class="reveal hover-target">
                     <div class="rounded-xl overflow-hidden bg-[#0e0e12] border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.8)] font-mono text-sm h-[400px] flex flex-col">
-                        <!-- Terminal Header -->
                         <div class="flex items-center gap-2 px-4 py-3 bg-[#16161c] border-b border-white/5 shrink-0">
-                            <div class="w-3 h-3 rounded-full bg-red-500 cursor-pointer hover:bg-red-400"></div>
-                            <div class="w-3 h-3 rounded-full bg-yellow-500 cursor-pointer hover:bg-yellow-400"></div>
-                            <div class="w-3 h-3 rounded-full bg-green-500 cursor-pointer hover:bg-green-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500 hover:bg-green-400"></div>
                             <span class="ml-4 text-xs text-gray-500 select-none">root@AV01D:~ (Interactive)</span>
                         </div>
-                        
-                        <!-- Terminal Body -->
                         <div class="p-4 flex-1 overflow-hidden flex flex-col bg-[#0a0a0c]">
                             <div id="term-output" class="text-gray-300 space-y-2 overflow-y-auto term-scroll flex-1 pb-2">
                                 <p class="text-cyber-primary">AV01D-OS v2.4.1 (tty1)</p>
                                 <p>Type <span class="text-yellow-400">'help'</span> to see available commands.</p>
                                 <br>
                             </div>
-                            
-                            <!-- Terminal Input Box -->
                             <div class="flex items-center mt-2 shrink-0">
                                 <span class="text-green-500">➜</span> <span class="text-blue-400 ml-2">~</span>
-                                <input type="text" id="term-input" class="bg-transparent border-none outline-none text-white ml-2 w-full font-mono text-sm" placeholder="type a command..." autocomplete="off" spellcheck="false">
+                                <input type="text" id="term-input" class="bg-transparent border-none outline-none text-white ml-2 w-full font-mono text-sm hover-target" placeholder="type a command..." autocomplete="off" spellcheck="false">
                             </div>
                         </div>
                     </div>
@@ -241,7 +279,7 @@
 
                 <!-- Biography & Animated Stats -->
                 <div class="flex flex-col justify-center reveal delay-200">
-                    <h2 class="text-3xl font-bold text-white mb-6">Analytic Mindset. <br><span class="text-gray-500">Defensive Strategy.</span></h2>
+                    <h2 class="text-3xl font-bold text-white mb-6 glitch-hover" data-text="Analytic Mindset. Defensive Strategy.">Analytic Mindset. <br><span class="text-gray-500">Defensive Strategy.</span></h2>
                     <p class="text-gray-400 text-lg mb-6 leading-relaxed">
                         In a digital landscape filled with evolving threats, I focus on proactive security. My expertise isn't just about finding bugs; it's about designing architectures that make those bugs irrelevant.
                     </p>
@@ -249,19 +287,17 @@
                         From simulating sophisticated network attacks in GNS3 to deploying automated monitoring stacks on Ubuntu, I treat infrastructure as code and security as a culture.
                     </p>
                     
-                    <!-- Animated Counters -->
                     <div class="grid grid-cols-2 gap-6" id="stats-container">
-                        <div class="p-4 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-colors">
+                        <div class="p-4 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-colors hover-target">
                             <h3 class="text-3xl font-bold text-white mb-1"><span class="counter" data-target="3">0</span>+</h3>
                             <p class="text-sm text-gray-500 font-mono text-cyber-primary">Years Experience</p>
                         </div>
-                        <div class="p-4 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-colors">
+                        <div class="p-4 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-colors hover-target">
                             <h3 class="text-3xl font-bold text-white mb-1"><span class="counter" data-target="100">0</span>%</h3>
                             <p class="text-sm text-gray-500 font-mono text-cyber-accent">Uptime Focus</p>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -269,9 +305,9 @@
     <!-- Certifications Marquee -->
     <section class="py-6 bg-cyber-primary/5 border-y border-cyber-primary/10 overflow-hidden relative">
         <div class="absolute inset-0 bg-gradient-to-r from-[#050507] via-transparent to-[#050507] z-10 w-full pointer-events-none"></div>
-        <div class="flex w-max animate-marquee pause-hover items-center">
+        <div class="flex w-max animate-marquee hover:[animation-play-state:paused] items-center">
             <!-- First Set -->
-            <div class="flex shrink-0 items-center gap-16 opacity-70 font-mono text-sm font-bold tracking-widest text-gray-400 px-8">
+            <div class="flex shrink-0 items-center gap-16 opacity-70 font-mono text-sm font-bold tracking-widest text-gray-400 px-8 hover-target">
                 <span class="flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-user-ninja text-cyber-primary"></i> THM: JR PENETRATION TESTER</span>
                 <span class="flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-globe text-cyber-primary"></i> THM: WEB FUNDAMENTALS</span>
                 <span class="flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-shield-virus text-cyber-primary"></i> THM: ADVENT OF CYBER '23</span>
@@ -280,8 +316,8 @@
                 <span class="flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-microchip text-cyber-primary"></i> CISCO: MODERN AI</span>
                 <span class="flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-brain text-cyber-primary"></i> MINNALEARN: AI FOR BUSINESS</span>
             </div>
-            <!-- Duplicate Set for Seamless Loop -->
-            <div class="flex shrink-0 items-center gap-16 opacity-70 font-mono text-sm font-bold tracking-widest text-gray-400 px-8">
+            <!-- Duplicate Set -->
+            <div class="flex shrink-0 items-center gap-16 opacity-70 font-mono text-sm font-bold tracking-widest text-gray-400 px-8 hover-target">
                 <span class="flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-user-ninja text-cyber-primary"></i> THM: JR PENETRATION TESTER</span>
                 <span class="flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-globe text-cyber-primary"></i> THM: WEB FUNDAMENTALS</span>
                 <span class="flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-shield-virus text-cyber-primary"></i> THM: ADVENT OF CYBER '23</span>
@@ -289,61 +325,6 @@
                 <span class="flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-network-wired text-cyber-primary"></i> CISCO: SEC & CONNECTIVITY</span>
                 <span class="flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-microchip text-cyber-primary"></i> CISCO: MODERN AI</span>
                 <span class="flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-brain text-cyber-primary"></i> MINNALEARN: AI FOR BUSINESS</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Tactical Arsenal (Tools & Tech Grid) -->
-    <section id="arsenal" class="py-24 bg-[#050507]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16 reveal">
-                <h2 class="text-3xl font-bold text-white mb-4">Tactical Arsenal</h2>
-                <div class="w-24 h-1 bg-cyber-primary mx-auto rounded"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Offensive -->
-                <div class="glass-panel p-8 rounded-2xl reveal">
-                    <div class="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center mb-6">
-                        <i class="fa-solid fa-crosshairs text-2xl text-red-500"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-4">Offensive (Red Team)</h3>
-                    <ul class="space-y-3 font-mono text-sm text-gray-400">
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-red-500"></i> Kali Linux / Parrot OS</li>
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-red-500"></i> Metasploit Framework</li>
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-red-500"></i> Burp Suite & Nmap</li>
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-red-500"></i> Wireshark Analysis</li>
-                    </ul>
-                </div>
-
-                <!-- Defensive & Infra -->
-                <div class="glass-panel p-8 rounded-2xl reveal delay-100 border border-cyber-primary/30 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-cyber-primary/10 rounded-bl-full -z-10"></div>
-                    <div class="w-12 h-12 bg-cyber-primary/10 rounded-lg flex items-center justify-center mb-6">
-                        <i class="fa-solid fa-server text-2xl text-cyber-primary"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-4">Infrastructure & Cloud</h3>
-                    <ul class="space-y-3 font-mono text-sm text-gray-400">
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-cyber-primary"></i> Docker Containerization</li>
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-cyber-primary"></i> Ubuntu / Windows Server</li>
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-cyber-primary"></i> Active Directory Auth</li>
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-cyber-primary"></i> GNS3 Network Topologies</li>
-                    </ul>
-                </div>
-
-                <!-- Monitoring -->
-                <div class="glass-panel p-8 rounded-2xl reveal delay-200">
-                    <div class="w-12 h-12 bg-cyber-accent/10 rounded-lg flex items-center justify-center mb-6">
-                        <i class="fa-solid fa-chart-line text-2xl text-cyber-accent"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-4">Defensive Monitoring</h3>
-                    <ul class="space-y-3 font-mono text-sm text-gray-400">
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-cyber-accent"></i> Prometheus & Grafana</li>
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-cyber-accent"></i> SIEM Log Analysis</li>
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-cyber-accent"></i> Network Segmentation</li>
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-cyber-accent"></i> Python Automation</li>
-                    </ul>
-                </div>
             </div>
         </div>
     </section>
@@ -353,10 +334,10 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-end mb-16 reveal">
                 <div>
-                    <h2 class="text-3xl font-bold text-white mb-2">Deployed Operations</h2>
+                    <h2 class="text-3xl font-bold text-white mb-2 glitch-hover" data-text="Deployed Operations">Deployed Operations</h2>
                     <p class="text-gray-500">Selected technical case studies.</p>
                 </div>
-                <a href="https://github.com/AV01D-XS" class="hidden md:flex items-center gap-2 text-cyber-primary hover:text-white transition-colors">
+                <a href="https://github.com/AV01D-XS" class="hover-target hidden md:flex items-center gap-2 text-cyber-primary hover:text-white transition-colors matrix-text" data-original="View GitHub">
                     View GitHub <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
@@ -364,7 +345,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 
                 <!-- Project 1 -->
-                <div class="group glass-panel rounded-2xl overflow-hidden hover:border-cyber-primary/50 transition-all duration-300 hover:-translate-y-2 reveal">
+                <div class="group glass-panel rounded-2xl overflow-hidden hover:border-cyber-primary/50 transition-all duration-300 hover:-translate-y-2 reveal hover-target">
                     <div class="h-48 overflow-hidden relative">
                         <div class="absolute inset-0 bg-[#0e0e12]/80 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
                         <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
@@ -374,64 +355,69 @@
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-white mb-3 group-hover:text-cyber-primary transition-colors">Enterprise Security Audit</h3>
-                        <p class="text-gray-400 text-sm mb-6 line-clamp-3">
-                            Executed a full-scope black box penetration test. Identified 3 critical vulnerabilities in legacy web apps and provided patch strategies.
+                        <p class="text-gray-400 text-sm mb-6 line-clamp-2">
+                            Executed a full-scope black box penetration test. Identified 3 critical vulnerabilities in legacy web apps.
                         </p>
-                        <div class="flex flex-wrap gap-2 mb-6">
-                            <span class="px-2 py-1 text-xs font-mono text-gray-300 bg-white/5 rounded border border-white/5">Kali Linux</span>
-                            <span class="px-2 py-1 text-xs font-mono text-gray-300 bg-white/5 rounded border border-white/5">Burp Suite</span>
+                        <div class="flex items-center justify-between border-t border-white/5 pt-4">
+                            <!-- MODAL TRIGGER -->
+                            <button onclick="openModal('modal-pentest')" class="matrix-text text-sm font-semibold text-white hover:text-cyber-primary transition-colors" data-original="View Details">
+                                View Details <i class="fa-solid fa-eye ml-1 text-xs"></i>
+                            </button>
+                            <!-- DOWNLOAD ICON -->
+                            <a href="pentest_report.pdf" download="Pentest_Report.pdf" class="text-gray-500 hover:text-cyber-primary transition-colors" title="Download Report">
+                                <i class="fa-solid fa-file-arrow-down text-lg"></i>
+                            </a>
                         </div>
-                        <a href="pentest_report.pdf" download="Pentest_Report.pdf" class="inline-flex items-center text-sm font-semibold text-white hover:text-cyber-primary transition-colors">
-                            Download Report <i class="fa-solid fa-file-arrow-down ml-2 text-xs"></i>
-                        </a>
                     </div>
                 </div>
 
                 <!-- Project 2 -->
-                <div class="group glass-panel rounded-2xl overflow-hidden hover:border-cyber-primary/50 transition-all duration-300 hover:-translate-y-2 reveal delay-100">
+                <div class="group glass-panel rounded-2xl overflow-hidden hover:border-cyber-accent/50 transition-all duration-300 hover:-translate-y-2 reveal delay-100 hover-target">
                     <div class="h-48 overflow-hidden relative">
                         <div class="absolute inset-0 bg-[#0e0e12]/80 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
-                        <img src="devsecops.png" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <img src="devsecops.png" onerror="this.src='https://images.unsplash.com/photo-1667372393119-c85c020799a3?q=80&w=600&auto=format&fit=crop'" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
                         <div class="absolute top-4 left-4 z-20">
                             <span class="px-3 py-1 text-xs font-bold text-black bg-cyber-accent rounded-full">DevSecOps</span>
                         </div>
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-white mb-3 group-hover:text-cyber-accent transition-colors">3-Tier Infrastructure</h3>
-                        <p class="text-gray-400 text-sm mb-6 line-clamp-3">
-                            Designed a containerized environment (Dev/Staging/Prod) on Ubuntu. Integrated Prometheus & Grafana for real-time security monitoring.
+                        <p class="text-gray-400 text-sm mb-6 line-clamp-2">
+                            Designed a containerized environment (Dev/Staging/Prod) on Ubuntu with Prometheus & Grafana monitoring.
                         </p>
-                        <div class="flex flex-wrap gap-2 mb-6">
-                            <span class="px-2 py-1 text-xs font-mono text-gray-300 bg-white/5 rounded border border-white/5">Docker</span>
-                            <span class="px-2 py-1 text-xs font-mono text-gray-300 bg-white/5 rounded border border-white/5">Grafana</span>
+                        <div class="flex items-center justify-between border-t border-white/5 pt-4">
+                            <button onclick="openModal('modal-devsecops')" class="matrix-text text-sm font-semibold text-white hover:text-cyber-accent transition-colors" data-original="View Details">
+                                View Details <i class="fa-solid fa-eye ml-1 text-xs"></i>
+                            </button>
+                            <a href="architecture_diagram.pdf" download="Architecture_Diagram.pdf" class="text-gray-500 hover:text-cyber-accent transition-colors" title="Download Architecture">
+                                <i class="fa-solid fa-file-arrow-down text-lg"></i>
+                            </a>
                         </div>
-                        <a href="architecture_diagram.pdf" download="Architecture_Diagram.pdf" class="inline-flex items-center text-sm font-semibold text-white hover:text-cyber-accent transition-colors">
-                            Download Architecture <i class="fa-solid fa-file-arrow-down ml-2 text-xs"></i>
-                        </a>
                     </div>
                 </div>
 
                 <!-- Project 3 -->
-                <div class="group glass-panel rounded-2xl overflow-hidden hover:border-cyber-primary/50 transition-all duration-300 hover:-translate-y-2 reveal delay-200">
+                <div class="group glass-panel rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-300 hover:-translate-y-2 reveal delay-200 hover-target">
                     <div class="h-48 overflow-hidden relative">
                         <div class="absolute inset-0 bg-[#0e0e12]/80 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
-                        <img src="Network.jpeg" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <img src="Network.jpeg" onerror="this.src='https://images.unsplash.com/photo-1558494949-ef526b0042a0?q=80&w=600&auto=format&fit=crop'" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
                         <div class="absolute top-4 left-4 z-20">
                             <span class="px-3 py-1 text-xs font-bold text-black bg-purple-500 rounded-full">NETWORKING</span>
                         </div>
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-white mb-3 group-hover:text-purple-500 transition-colors">Active Directory Lab</h3>
-                        <p class="text-gray-400 text-sm mb-6 line-clamp-3">
-                            Simulated a multi-domain Windows Server environment in GNS3. Implemented rigorous Group Policies and segmentation rules.
+                        <p class="text-gray-400 text-sm mb-6 line-clamp-2">
+                            Simulated a multi-domain Windows Server environment in GNS3 with rigorous Group Policies.
                         </p>
-                        <div class="flex flex-wrap gap-2 mb-6">
-                            <span class="px-2 py-1 text-xs font-mono text-gray-300 bg-white/5 rounded border border-white/5">Windows Server</span>
-                            <span class="px-2 py-1 text-xs font-mono text-gray-300 bg-white/5 rounded border border-white/5">GNS3</span>
+                        <div class="flex items-center justify-between border-t border-white/5 pt-4">
+                            <button onclick="openModal('modal-ad')" class="matrix-text text-sm font-semibold text-white hover:text-purple-500 transition-colors" data-original="View Details">
+                                View Details <i class="fa-solid fa-eye ml-1 text-xs"></i>
+                            </button>
+                            <a href="lab_guide.pdf" download="AD_Lab_Guide.pdf" class="text-gray-500 hover:text-purple-500 transition-colors" title="Download Lab Guide">
+                                <i class="fa-solid fa-file-arrow-down text-lg"></i>
+                            </a>
                         </div>
-                        <a href="lab_guide.pdf" download="AD_Lab_Guide.pdf" class="inline-flex items-center text-sm font-semibold text-white hover:text-purple-500 transition-colors">
-                            Download Lab Guide <i class="fa-solid fa-file-arrow-down ml-2 text-xs"></i>
-                        </a>
                     </div>
                 </div>
 
@@ -439,189 +425,355 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="py-24 bg-[#050507] relative overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyber-primary/10 rounded-full blur-[100px]"></div>
-
-        <div class="max-w-4xl mx-auto px-4 relative z-10 text-center">
-            <h2 class="text-3xl font-bold text-white mb-6">Initialize Communication</h2>
-            <p class="text-gray-400 mb-12 text-lg">
-                Ready to secure your infrastructure? I am currently available for freelance projects and full-time opportunities.
-            </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Email Card -->
-                <a href="mailto:Ayham.alhalabi10@gmail.com" class="group glass-panel p-8 rounded-2xl hover:border-cyber-primary/50 transition-all duration-300">
-                    <div class="w-16 h-16 mx-auto bg-cyber-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-envelope text-2xl text-cyber-primary"></i>
-                    </div>
-                    <h3 class="text-white font-bold text-xl mb-2">Email Transmission</h3>
-                    <p class="text-gray-500 text-sm">Ayham.alhalabi10@gmail.com</p>
+    <!-- Footer / Contact -->
+    <footer id="contact" class="py-12 border-t border-white/5 bg-[#050507] text-center relative overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyber-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="relative z-10 max-w-xl mx-auto px-4">
+            <h2 class="text-2xl font-bold text-white mb-6 glitch-hover" data-text="Initialize Communication">Initialize Communication</h2>
+            <div class="flex justify-center gap-6 mb-8">
+                <a href="mailto:Ayham.alhalabi10@gmail.com" class="hover-target w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-cyber-primary hover:border-cyber-primary transition-all text-gray-400 hover:text-white">
+                    <i class="fa-solid fa-envelope"></i>
                 </a>
-
-                <!-- LinkedIn Card -->
-                <a href="https://www.linkedin.com/in/ayhamalhalabi/" target="_blank" class="group glass-panel p-8 rounded-2xl hover:border-cyber-primary/50 transition-all duration-300">
-                    <div class="w-16 h-16 mx-auto bg-blue-500/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fa-brands fa-linkedin text-2xl text-blue-500"></i>
-                    </div>
-                    <h3 class="text-white font-bold text-xl mb-2">Professional Network</h3>
-                    <p class="text-gray-500 text-sm">Connect on LinkedIn</p>
+                <a href="https://www.linkedin.com/in/ayhamalhalabi/" target="_blank" class="hover-target w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#0a66c2] hover:border-[#0a66c2] transition-all text-gray-400 hover:text-white">
+                    <i class="fa-brands fa-linkedin-in"></i>
                 </a>
             </div>
+            <p class="text-gray-600 font-mono text-xs">
+                <span class="text-cyber-primary">root@AV01D</span>:~# logout<br>
+                &copy; 2025 AV01D. Secured & Encrypted.
+            </p>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="py-8 border-t border-white/5 bg-[#050507] text-center">
-        <p class="text-gray-600 font-mono text-sm">
-            <span class="text-cyber-primary">root@AV01D</span>:~# logout
-        </p>
-        <p class="text-gray-700 text-xs mt-2">&copy; 2025 AV01D. Secured & Encrypted.</p>
     </footer>
 
-    <!-- Scripts (Canvas, Terminal, Counters, Reveals) -->
+    <!-- ========================================== -->
+    <!-- 4. PROJECT MODALS (HIDDEN BY DEFAULT)      -->
+    <!-- ========================================== -->
+    
+    <!-- Modal 1: Pen Test -->
+    <div id="modal-pentest" class="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-xl border border-cyber-primary/50 relative m-4 transform scale-95 transition-transform duration-300" id="modal-pentest-content">
+            <button onclick="closeModal('modal-pentest')" class="hover-target absolute top-4 right-4 text-gray-400 hover:text-white z-10 bg-black/50 w-8 h-8 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            <div class="h-64 bg-[url('https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=1200&auto=format')] bg-cover bg-center relative border-b border-white/10">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0e0e12] to-transparent"></div>
+                <h2 class="absolute bottom-6 left-6 text-3xl font-bold text-white">Enterprise Security Audit</h2>
+            </div>
+            <div class="p-8 space-y-6 text-gray-300">
+                <div>
+                    <h4 class="text-cyber-primary font-mono text-sm font-bold mb-2">TARGET OBJECTIVE</h4>
+                    <p>Conducted a fully authorized, black-box penetration test against a corporate infrastructure. The objective was to identify exploit chains leading to domain compromise or sensitive data exfiltration.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="text-cyber-primary font-mono text-sm font-bold mb-2">VECTORS TESTED</h4>
+                        <ul class="list-disc list-inside space-y-1 text-sm">
+                            <li>Web App Vulnerabilities (OWASP Top 10)</li>
+                            <li>Network Service Misconfigurations</li>
+                            <li>Active Directory PrivEsc</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-cyber-primary font-mono text-sm font-bold mb-2">TOOLS UTILIZED</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 text-xs font-mono bg-white/5 rounded border border-white/5">Kali Linux</span>
+                            <span class="px-2 py-1 text-xs font-mono bg-white/5 rounded border border-white/5">Metasploit</span>
+                            <span class="px-2 py-1 text-xs font-mono bg-white/5 rounded border border-white/5">Burp Suite Pro</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-cyber-primary font-mono text-sm font-bold mb-2">OUTCOME</h4>
+                    <p class="text-sm border-l-2 border-green-500 pl-4 bg-green-500/5 py-2">Successfully identified 3 critical CVEs and 5 high-risk misconfigurations. Delivered a comprehensive 40-page remediation report resulting in a 95% reduction in external attack surface.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: DevSecOps -->
+    <div id="modal-devsecops" class="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-xl border border-cyber-accent/50 relative m-4 transform scale-95 transition-transform duration-300" id="modal-devsecops-content">
+            <button onclick="closeModal('modal-devsecops')" class="hover-target absolute top-4 right-4 text-gray-400 hover:text-white z-10 bg-black/50 w-8 h-8 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            <div class="h-64 bg-[#0e0e12] relative border-b border-white/10 overflow-hidden">
+                <img src="devsecops.png" onerror="this.src='https://images.unsplash.com/photo-1667372393119-c85c020799a3?q=80&w=1200&auto=format'" class="w-full h-full object-cover opacity-50">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0e0e12] to-transparent"></div>
+                <h2 class="absolute bottom-6 left-6 text-3xl font-bold text-white">3-Tier Infrastructure</h2>
+            </div>
+            <div class="p-8 space-y-6 text-gray-300">
+                <div>
+                    <h4 class="text-cyber-accent font-mono text-sm font-bold mb-2">ARCHITECTURE OVERVIEW</h4>
+                    <p>Designed and deployed a resilient, containerized 3-tier environment. Emphasized security at every layer, isolating Development, Staging, and Production workflows.</p>
+                </div>
+                <div>
+                    <h4 class="text-cyber-accent font-mono text-sm font-bold mb-2">SECURITY & MONITORING INTEGRATION</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><i class="fa-solid fa-check text-cyber-accent mr-2"></i><strong>Docker Security:</strong> Implemented non-root containers and restricted network bridges.</li>
+                        <li><i class="fa-solid fa-check text-cyber-accent mr-2"></i><strong>Telemetry:</strong> Deployed Prometheus node exporters to track anomalous CPU/RAM spikes indicative of compromise.</li>
+                        <li><i class="fa-solid fa-check text-cyber-accent mr-2"></i><strong>Visualization:</strong> Built custom Grafana dashboards for real-time security operations center (SOC) monitoring.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Network -->
+    <div id="modal-ad" class="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-xl border border-purple-500/50 relative m-4 transform scale-95 transition-transform duration-300" id="modal-ad-content">
+            <button onclick="closeModal('modal-ad')" class="hover-target absolute top-4 right-4 text-gray-400 hover:text-white z-10 bg-black/50 w-8 h-8 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            <div class="h-64 bg-[#0e0e12] relative border-b border-white/10 overflow-hidden">
+                <img src="Network.jpeg" onerror="this.src='https://images.unsplash.com/photo-1558494949-ef526b0042a0?q=80&w=1200&auto=format'" class="w-full h-full object-cover opacity-50">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0e0e12] to-transparent"></div>
+                <h2 class="absolute bottom-6 left-6 text-3xl font-bold text-white">Active Directory Lab</h2>
+            </div>
+            <div class="p-8 space-y-6 text-gray-300">
+                <div>
+                    <h4 class="text-purple-500 font-mono text-sm font-bold mb-2">LAB SPECIFICATIONS</h4>
+                    <p>Engineered a complex, simulated corporate network using GNS3 and VMware. The topology includes multiple subnets, a DMZ, Windows Server Domain Controllers, and Ubuntu Linux nodes.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="text-purple-500 font-mono text-sm font-bold mb-2">IMPLEMENTED DEFENSES</h4>
+                        <ul class="list-disc list-inside space-y-1 text-sm">
+                            <li>Strict VLAN Segmentation</li>
+                            <li>GPO Hardening (Password Policies)</li>
+                            <li>LAPS (Local Admin Password Solution)</li>
+                            <li>Firewall rule strict adherence</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-purple-500 font-mono text-sm font-bold mb-2">LEARNING OUTCOMES</h4>
+                        <p class="text-sm">Gained deep understanding of Kerberos authentication, lateral movement prevention, and how architectural flaws lead to domain-wide compromise.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script>
-        // 1. Interactive Network Canvas Animation
+        // ----------------------------------------------------
+        // 1. LINUX BOOT SEQUENCE PRELOADER
+        // ----------------------------------------------------
+        const bootLines = [
+            "AV01D-OS Kernel 5.15.0-generic x86_64",
+            "Initializing boot sequence................ [OK]",
+            "Loading cryptographic modules............. [OK]",
+            "Mounting secure virtual filesystems....... [OK]",
+            "Establishing secure uplink................ [OK]",
+            "Bypassing firewall protocols.............. [OK]",
+            "Decrypting user payload: AV01D............ [OK]",
+            "Access Granted. Welcome."
+        ];
+        
+        const bootContainer = document.getElementById('boot-text');
+        const preloader = document.getElementById('preloader');
+        
+        let lineIndex = 0;
+        function showNextBootLine() {
+            if (lineIndex < bootLines.length) {
+                const p = document.createElement('p');
+                p.textContent = bootLines[lineIndex];
+                bootContainer.appendChild(p);
+                lineIndex++;
+                // Faster typing effect, slower on the last line
+                const delay = lineIndex === bootLines.length ? 600 : 150 + Math.random() * 100;
+                setTimeout(showNextBootLine, delay);
+            } else {
+                // Boot complete, remove preloader
+                setTimeout(() => {
+                    preloader.style.opacity = '0';
+                    document.body.classList.remove('no-scroll');
+                    setTimeout(() => preloader.remove(), 700);
+                }, 500);
+            }
+        }
+        // Start boot sequence when DOM loads
+        document.addEventListener("DOMContentLoaded", showNextBootLine);
+
+
+        // ----------------------------------------------------
+        // 2. CYBER CURSOR LOGIC
+        // ----------------------------------------------------
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorRing = document.getElementById('cursor-ring');
+        
+        window.addEventListener('mousemove', (e) => {
+            cursorDot.style.left = e.clientX + 'px';
+            cursorDot.style.top = e.clientY + 'px';
+            
+            // Slight delay on the ring for a cool effect
+            cursorRing.animate({
+                left: `${e.clientX}px`,
+                top: `${e.clientY}px`
+            }, { duration: 100, fill: "forwards" });
+        });
+
+        // Add hover effect to links and buttons
+        const hoverTargets = document.querySelectorAll('a, button, input, .hover-target');
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => cursorRing.classList.add('hovering'));
+            target.addEventListener('mouseleave', () => cursorRing.classList.remove('hovering'));
+        });
+
+
+        // ----------------------------------------------------
+        // 3. MATRIX TEXT HOVER EFFECT
+        // ----------------------------------------------------
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+        const matrixElements = document.querySelectorAll('.matrix-text');
+        
+        matrixElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                let iterations = 0;
+                const originalText = el.getAttribute('data-original');
+                const interval = setInterval(() => {
+                    el.innerText = originalText.split('')
+                        .map((letter, index) => {
+                            if(index < iterations) return originalText[index];
+                            return chars[Math.floor(Math.random() * chars.length)];
+                        }).join('');
+                    
+                    if(iterations >= originalText.length) clearInterval(interval);
+                    iterations += 1 / 3; // Speed of decode
+                }, 30);
+            });
+        });
+
+
+        // ----------------------------------------------------
+        // 4. MODAL LOGIC (PROJECT DETAILS)
+        // ----------------------------------------------------
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(`${modalId}-content`);
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+            document.body.classList.add('no-scroll');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(`${modalId}-content`);
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.body.classList.remove('no-scroll');
+        }
+
+        // Close modal when clicking outside the box
+        window.onclick = function(event) {
+            if (event.target.classList.contains('fixed')) {
+                event.target.classList.add('opacity-0', 'pointer-events-none');
+                event.target.querySelector('.glass-panel').classList.remove('scale-100');
+                event.target.querySelector('.glass-panel').classList.add('scale-95');
+                document.body.classList.remove('no-scroll');
+            }
+        }
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.fixed.z-\\[99999\\]').forEach(modal => {
+                    if(!modal.classList.contains('opacity-0')) closeModal(modal.id);
+                });
+            }
+        });
+
+
+        // ----------------------------------------------------
+        // 5. EXISTING BACKGROUND CANVAS & TERMINAL
+        // ----------------------------------------------------
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
         class Particle {
             constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
+                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5;
                 this.size = Math.random() * 2;
             }
             update() {
-                this.x += this.vx;
-                this.y += this.vy;
+                this.x += this.vx; this.y += this.vy;
                 if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
                 if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
             }
             draw() {
                 ctx.fillStyle = 'rgba(59, 130, 246, 0.5)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
             }
         }
 
         function initParticles() {
-            particles = [];
-            for (let i = 0; i < 50; i++) particles.push(new Particle());
+            particles = []; for (let i = 0; i < 50; i++) particles.push(new Particle());
         }
-
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
+                particles[i].update(); particles[i].draw();
                 for (let j = i; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
+                    const dx = particles[i].x - particles[j].x; const dy = particles[i].y - particles[j].y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
                     if (distance < 150) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(59, 130, 246, ${0.1 - distance/1500})`;
-                        ctx.lineWidth = 1;
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
+                        ctx.beginPath(); ctx.strokeStyle = `rgba(59, 130, 246, ${0.1 - distance/1500})`;
+                        ctx.lineWidth = 1; ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
                     }
                 }
             }
             requestAnimationFrame(animateParticles);
         }
-        initParticles();
-        animateParticles();
+        initParticles(); animateParticles();
 
-        // 2. Scroll Reveal Animation
+        // Reveal Animations
         const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
         }, { threshold: 0.1 });
-
         document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-        // 3. Animated Number Counters
+        // Animated Counters
         const counters = document.querySelectorAll('.counter');
         const counterObserver = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if(entry.isIntersecting) {
-                    const target = entry.target;
-                    const targetNum = +target.getAttribute('data-target');
-                    let count = 0;
-                    const increment = targetNum / 50; // Speed of counting
-
+                    const target = entry.target; const targetNum = +target.getAttribute('data-target');
+                    let count = 0; const increment = targetNum / 50;
                     const updateCount = () => {
                         count += increment;
-                        if(count < targetNum) {
-                            target.innerText = Math.ceil(count);
-                            requestAnimationFrame(updateCount);
-                        } else {
-                            target.innerText = targetNum;
-                        }
+                        if(count < targetNum) { target.innerText = Math.ceil(count); requestAnimationFrame(updateCount); } 
+                        else { target.innerText = targetNum; }
                     };
-                    updateCount();
-                    obs.unobserve(target); // Only animate once
+                    updateCount(); obs.unobserve(target);
                 }
             });
         }, { threshold: 0.5 });
-        
         counters.forEach(counter => counterObserver.observe(counter));
 
-        // 4. Interactive Terminal Logic
+        // Interactive Terminal
         const termInput = document.getElementById('term-input');
         const termOutput = document.getElementById('term-output');
-
         const commands = {
             'help': 'Available commands: <br> - <span class="text-yellow-400">whoami</span> (Profile data) <br> - <span class="text-yellow-400">skills</span> (View tech stack) <br> - <span class="text-yellow-400">contact</span> (Get email) <br> - <span class="text-yellow-400">clear</span> (Clear terminal)',
-            'whoami': 'Name: Ayham Alhalabi (AV01D) <br> Role: Cybersecurity Analyst & DevSecOps Engineer <br> Status: Actively securing infrastructure.',
+            'whoami': 'Name: Ayham Alhalabi (AV01D) <br> Role: Cybersecurity Analyst & DevOps Engineer <br> Status: Actively securing infrastructure.',
             'skills': 'Loading skills.json... <br> <span class="text-green-400">Offensive:</span> Kali, Metasploit, Burp Suite <br> <span class="text-blue-400">Defensive:</span> Docker, Grafana, SIEM, Firewalls',
-            'contact': 'Initiating secure channel... <br> Email: <a href="mailto:Ayham.alhalabi10@gmail.com" class="text-cyber-primary underline">Ayham.alhalabi10@gmail.com</a>',
+            'contact': 'Initiating secure channel... <br> Email: <a href="mailto:Ayham.alhalabi10@gmail.com" class="text-cyber-primary underline hover-target">Ayham.alhalabi10@gmail.com</a>',
             'sudo': '<span class="text-red-500">ACCESS DENIED.</span> This incident has been logged and reported.',
             'clear': ''
         };
-
         termInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const val = this.value.trim().toLowerCase();
                 if (val) {
-                    // Append user input
                     termOutput.innerHTML += `<div><span class="text-green-500">➜</span> <span class="text-blue-400">~</span> ${val}</div>`;
-                    
-                    // Process command
-                    if (val === 'clear') {
-                        termOutput.innerHTML = '';
-                    } else if (commands[val]) {
-                        termOutput.innerHTML += `<div class="mb-2 ml-4">${commands[val]}</div>`;
-                    } else {
-                        termOutput.innerHTML += `<div class="mb-2 ml-4 text-red-400">bash: ${val}: command not found. Type 'help'.</div>`;
-                    }
-                    
-                    // Auto-scroll to bottom
+                    if (val === 'clear') { termOutput.innerHTML = ''; } 
+                    else if (commands[val]) { termOutput.innerHTML += `<div class="mb-2 ml-4">${commands[val]}</div>`; } 
+                    else { termOutput.innerHTML += `<div class="mb-2 ml-4 text-red-400">bash: ${val}: command not found. Type 'help'.</div>`; }
                     termOutput.scrollTop = termOutput.scrollHeight;
                 }
                 this.value = '';
             }
         });
-
-        // Focus terminal input when clicking inside the window
-        document.getElementById('term-output').parentElement.addEventListener('click', () => {
-            termInput.focus();
-        });
+        document.getElementById('term-output').parentElement.addEventListener('click', () => { termInput.focus(); });
     </script>
 </body>
 </html>
