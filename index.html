@@ -48,10 +48,9 @@
     </script>
 
     <style>
-        /* Base styles & Hiding Default Cursor */
+        /* Base styles */
         body, a, button, input, textarea { 
             background-color: #050507; 
-            cursor: none !important; 
         }
         body { overflow-x: hidden; }
         .no-scroll { overflow: hidden; }
@@ -104,24 +103,6 @@
             opacity: 0.4;
         }
 
-        /* Custom Cyber Cursor Elements */
-        .cyber-cursor-dot {
-            position: fixed; top: 0; left: 0; width: 6px; height: 6px;
-            background-color: #10b981; border-radius: 50%; pointer-events: none;
-            transform: translate(-50%, -50%); z-index: 999999;
-            box-shadow: 0 0 10px #10b981;
-        }
-        .cyber-cursor-ring {
-            position: fixed; top: 0; left: 0; width: 30px; height: 30px;
-            border: 1px solid rgba(59, 130, 246, 0.6); border-radius: 50%; pointer-events: none;
-            transform: translate(-50%, -50%); z-index: 999998;
-            transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
-        }
-        .cyber-cursor-ring.hovering {
-            width: 50px; height: 50px; background-color: rgba(59, 130, 246, 0.1); border-color: #3b82f6;
-        }
-
         /* Glitch Hover Effect */
         .glitch-hover { position: relative; display: inline-block; }
         .glitch-hover::before, .glitch-hover::after {
@@ -146,23 +127,9 @@
             40% { clip-path: inset(70% 0 10% 0); } 60% { clip-path: inset(20% 0 50% 0); }
             80% { clip-path: inset(50% 0 30% 0); } 100% { clip-path: inset(5% 0 80% 0); }
         }
-
-        /* Mobile Optimization: Disable Custom Cursor */
-        @media (max-width: 768px) {
-            .cyber-cursor-dot, .cyber-cursor-ring {
-                display: none !important;
-            }
-            body, a, button, input, textarea {
-                cursor: auto !important;
-            }
-        }
     </style>
 </head>
 <body class="text-cyber-text font-sans antialiased relative no-scroll">
-
-    <!-- Custom Cursor -->
-    <div class="cyber-cursor-dot" id="cursor-dot"></div>
-    <div class="cyber-cursor-ring" id="cursor-ring"></div>
 
     <!-- 1. LINUX BOOT PRELOADER -->
     <div id="preloader" class="fixed inset-0 bg-[#020202] z-[999999] flex flex-col p-4 md:p-8 font-mono text-sm md:text-base text-[#00ff41] transition-opacity duration-700">
@@ -596,28 +563,6 @@
             }
         }
         document.addEventListener("DOMContentLoaded", showNextBootLine);
-
-
-        // ----------------------------------------------------
-        // 2. CYBER CURSOR LOGIC
-        // ----------------------------------------------------
-        const cursorDot = document.getElementById('cursor-dot');
-        const cursorRing = document.getElementById('cursor-ring');
-        
-        window.addEventListener('mousemove', (e) => {
-            cursorDot.style.left = e.clientX + 'px';
-            cursorDot.style.top = e.clientY + 'px';
-            cursorRing.animate({
-                left: `${e.clientX}px`,
-                top: `${e.clientY}px`
-            }, { duration: 100, fill: "forwards" });
-        });
-
-        const hoverTargets = document.querySelectorAll('a, button, input, .hover-target');
-        hoverTargets.forEach(target => {
-            target.addEventListener('mouseenter', () => cursorRing.classList.add('hovering'));
-            target.addEventListener('mouseleave', () => cursorRing.classList.remove('hovering'));
-        });
 
 
         // ----------------------------------------------------
